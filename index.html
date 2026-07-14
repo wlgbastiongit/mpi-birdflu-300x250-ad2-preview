@@ -44,12 +44,6 @@
     opacity: 0;
     transition: opacity 1s ease-in-out;
   }
-  /* text/card elements: no independent motion - they fade in/out purely via the frame's own opacity transition */
-  .static-el {
-    position: absolute;
-    display: block;
-    opacity: 1;
-  }
 
   /* --- shared stripe: static, sits above every frame --- */
   .stripe-wrap {
@@ -69,15 +63,19 @@
   }
 
   /* --- element placement --- */
-  .birds    { left: 43.33px; top: 93.33px; width: 256.67px; height: 170px; }
-  .headline { left: 7.33px;  top: 22px;    width: 229.33px; height: 97px; transform-origin: left center; }
-  .text2    { left: 10px;    top: 68.33px; width: 213.33px; height: 124.33px; }
-  .card3    { left: 29.67px; top: 74.33px; width: 239.67px; height: 117px; }
-  .card4    { left: 30px;    top: 78px;    width: 239.33px; height: 94px; }
-  .card5    { left: 29.33px; top: 72.67px; width: 240px;    height: 103.33px; }
-  .card6    { left: 82.21px; top: 44.65px; width: 135.59px; height: 131.68px; }
-  .cta      { left: 89.84px; top: 172px;   width: 120.33px; height: 30px; }
-  .govtnz   { left: 222.67px;top: 212px;   width: 62px;     height: 23px; }
+  .birds       { left: 43.33px; top: 93.33px; width: 256.67px; height: 170px; }
+  .headline    { left: 7.33px;  top: 22px;    width: 229.33px; height: 97px; transform-origin: left center; }
+
+  .card2body   { left: 29.67px; top: 74.33px; width: 239.67px; height: 117px; }
+  .card2icon   { left: 26px;    top: 81.66px; width: 83.67px;  height: 83.67px; }
+  .card3body   { left: 30px;    top: 78px;    width: 239.33px; height: 94px; }
+  .card3icon   { left: 26px;    top: 83.33px; width: 80.67px;  height: 80.67px; }
+  .card4body   { left: 29.33px; top: 72.67px; width: 240px;    height: 103.33px; }
+  .card4icon   { left: 26px;    top: 84.67px; width: 78.67px;  height: 78.67px; }
+
+  .card5       { left: 82.21px; top: 44.65px; width: 135.59px; height: 131.68px; }
+  .cta         { left: 89.84px; top: 172px;   width: 120.33px; height: 30px; }
+  .govtnz      { left: 222.67px;top: 212px;   width: 62px;     height: 23px; }
 
   /* --- keyframes ---
      transform only: opacity is handled separately below by a plain transition, so
@@ -94,6 +92,10 @@
   @keyframes expandIn {
     from { transform: scale(0); }
     to   { transform: scale(1); }
+  }
+  @keyframes iconFlyIn {
+    from { transform: translate(-90px, -26px) rotate(-22deg) scale(0.55); }
+    to   { transform: translate(0, 0) rotate(0) scale(1); }
   }
 
   /* --- per-frame entrance timing ---
@@ -115,11 +117,26 @@
     animation: expandIn 1.1s ease-out 1.75s;
   }
 
-  /* frames 2-5 text/cards: no element-level animation - plain fade in/out via the frame's own opacity transition */
+  /* frames 2-4 (icon cards): the symbol flies into position first, then the
+     card body (background + copy) rises and fades in behind/around it */
+  .frame.active .card2icon,
+  .frame.active .card3icon,
+  .frame.active .card4icon {
+    opacity: 1;
+    transition: opacity 0.9s ease-out;
+    animation: iconFlyIn 0.9s cubic-bezier(.2,.8,.3,1.15);
+  }
+  .frame.active .card2body,
+  .frame.active .card3body,
+  .frame.active .card4body {
+    opacity: 1;
+    transition: opacity 0.9s ease-in-out 1.05s;
+    animation: fadeRiseIn 0.9s ease-out 1.05s;
+  }
 
-  /* frame 6 (end card): the bird flu logo fades/rises in first and lingers on its own,
+  /* frame 5 (end card): the bird flu logo fades/rises in first and lingers on its own,
      then the CTA and GOVT.NZ logo come in together well after (matches the OG poultry banner sequencing) */
-  .frame.active .card6 {
+  .frame.active .card5 {
     opacity: 1;
     transition: opacity 0.8s ease-in-out 0.15s;
     animation: fadeRiseIn 0.8s ease-out 0.15s;
@@ -152,28 +169,26 @@
 
     <div class="frame" id="frame2">
       <img class="bg" src="images/bg-feather.jpg" alt="">
-      <img class="static-el text2" src="images/el-frame2_text.png" alt="If you're heading outdoors, know what to do to limit the impact">
+      <img class="el card2body" src="images/el-frame2_cardbody.png" alt="Keep your distance. Stay away from sick or dead wildlife. Keep pets away too.">
+      <img class="el card2icon" src="images/el-frame2_icon.png" alt="">
     </div>
 
     <div class="frame" id="frame3">
       <img class="bg" src="images/bg-feather.jpg" alt="">
-      <img class="static-el card3" src="images/el-frame3_card.png" alt="Keep your distance. Stay away from sick or dead wildlife. Keep pets away too.">
+      <img class="el card3body" src="images/el-frame3_cardbody.png" alt="Keep clean. Wash your hands and clean your gear after being outdoors.">
+      <img class="el card3icon" src="images/el-frame3_icon.png" alt="">
     </div>
 
     <div class="frame" id="frame4">
       <img class="bg" src="images/bg-feather.jpg" alt="">
-      <img class="static-el card4" src="images/el-frame4_card.png" alt="Keep clean. Wash your hands and clean your gear after being outdoors.">
+      <img class="el card4body" src="images/el-frame4_cardbody.png" alt="Know when to report. Search online for the latest advice.">
+      <img class="el card4icon" src="images/el-frame4_icon.png" alt="">
     </div>
 
     <div class="frame" id="frame5">
       <img class="bg" src="images/bg-feather.jpg" alt="">
-      <img class="static-el card5" src="images/el-frame5_card.png" alt="Know when to report. Search online for the latest advice.">
-    </div>
-
-    <div class="frame" id="frame6">
-      <img class="bg" src="images/bg-feather.jpg" alt="">
-      <img class="el card6" src="images/el-frame6_card.png" alt="Bird flu, know what to do">
-      <img class="el cta" src="images/el-frame6_cta.png" alt="Find out more">
+      <img class="el card5" src="images/el-frame5_card.png" alt="Bird flu, know what to do">
+      <img class="el cta" src="images/el-frame5_cta.png" alt="Find out more">
       <img class="el govtnz" src="images/govtnz-lockup.png" alt="GOVT.NZ">
     </div>
 
@@ -197,10 +212,9 @@
       document.getElementById("frame2"),
       document.getElementById("frame3"),
       document.getElementById("frame4"),
-      document.getElementById("frame5"),
-      document.getElementById("frame6")
+      document.getElementById("frame5")
     ];
-    var durations = [3800, 4000, 4000, 3800, 4000, 4200]; // ms each frame is shown
+    var durations = [4200, 5000, 5000, 5000, 5200]; // ms each frame is shown
     var maxLoops = 2; // full sequence repeats, then holds on the end card
     var index = 0;
     var loopCount = 0;
@@ -233,8 +247,7 @@
     // transition/animation to actually play. A double rAF lets the browser paint
     // the inactive state first; without it, the very first activation can get
     // coalesced with the initial render and the entrance skips straight to its
-    // end state (looked like "the text is already there" on first load, only
-    // animating properly from the second loop onward).
+    // end state.
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
         showFrame(0);
